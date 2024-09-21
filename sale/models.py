@@ -52,7 +52,7 @@ class Employee(ModelBase):
         to='Department',
         on_delete=models.DO_NOTHING(),
         null=False,
-        blank= True,
+        blank=True,
     )
 
     class meta:
