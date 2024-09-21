@@ -55,5 +55,5 @@ class Employee(ModelBase):
         blank=True,
     )
 
-    class meta:
+    class Meta:
         db_table = 'employee'
