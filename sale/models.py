@@ -116,7 +116,7 @@ class Branch(ModelBase):
     )
 
     class Meta:
-        db_table = 'brach'
+        db_table = 'branch'
 
 
 class Product(ModelBase):
