@@ -38,7 +38,8 @@ class City(ModelBase):
     name = models.CharField(max_length=64, null=False)
     state = models.ForeignKey(
         to='State',
-        on_delete=models.DO_NOTHING(),
+        on_delete=models.DO_NOTHING,
+        db_table='id_state',
         null=False,
     )
 
