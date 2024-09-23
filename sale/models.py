@@ -47,14 +47,40 @@ class City(ModelBase):
         db_table = 'city'
 
 
+class Zone(ModelBase):
+    name = models.CharField(max_length=64, null=False)
+    state = models.ForeignKey(
+        to='State',
+        on_delete=models.DO_NOTHING,
+        db_table='id_state',
+        null=False,
+    )
+
+    class Meta:
+        db_table = 'zone'
+
+
 class Employee(ModelBase):
     name = models.CharField(max_length=64, null=False)
     department = models.ForeignKey(
         to='Department',
-        on_delete=models.DO_NOTHING(),
+        on_delete=models.DO_NOTHING,
+        db_table='id_department',
         null=False,
-        blank=True,
     )
 
     class Meta:
         db_table = 'employee'
+
+
+class Customer(ModelBase):
+    class Gender(models.TextChoices):
+        MALE = 'M'
+        FEMALE = 'F'
+
+    name = models.CharField(max_length=64, null=False)
+    income = models.DecimalField(max_digits=16, decimal_places=2, null=False)
+    gender = models.CharField(max_length=1, null=False, choices=Gender.choices)
+
+    class Meta:
+        db_table = 'customer'
