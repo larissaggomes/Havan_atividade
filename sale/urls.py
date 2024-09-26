@@ -4,7 +4,7 @@ from sale import viewsets
 router = DefaultRouter()
 router.register('marital_status', viewsets.MaritalStatusViewSet)
 router.register('department', viewsets.DepartmentViewSet)
-router.register('State', viewsets.StateViewSet)
+router.register('state', viewsets.StateViewSet)
 router.register('city', viewsets.CityViewSet)
 router.register('zone', viewsets.ZoneViewSet)
 router.register('employee', viewsets.EmployeeViewSet)

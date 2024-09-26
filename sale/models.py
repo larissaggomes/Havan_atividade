@@ -1,7 +1,6 @@
 from django.db import models
 
 
-# Create your models here.
 class ModelBase(models.Model):
     id = models.AutoField(primary_key=True)
     created_at = models.DateTimeField(auto_now_add=True, null=False)
@@ -13,6 +12,7 @@ class ModelBase(models.Model):
         abstract = True
 
 
+# Create your models here.
 class Department(ModelBase):
     name = models.CharField(max_length=64, null=False)
 
@@ -34,6 +34,9 @@ class State(ModelBase):
     class Meta:
         db_table = 'state'
 
+    def __str__(self):
+        return self.name
+
 
 class City(ModelBase):
     name = models.CharField(max_length=64, null=False)
@@ -41,7 +44,7 @@ class City(ModelBase):
         to='State',
         on_delete=models.DO_NOTHING,
         db_column='id_state',
-        null=False,
+        null=False
     )
 
     class Meta:
@@ -50,100 +53,89 @@ class City(ModelBase):
 
 class Zone(ModelBase):
     name = models.CharField(max_length=64, null=False)
-    state = models.ForeignKey(
-        to='State',
-        on_delete=models.DO_NOTHING,
-        db_column='id_state',
-        null=False,
-    )
 
     class Meta:
         db_table = 'zone'
 
 
-class Employee(ModelBase):
+class District(ModelBase):
     name = models.CharField(max_length=64, null=False)
+    city = models.ForeignKey(
+        to='City',
+        on_delete=models.DO_NOTHING,
+        db_column='id_city',
+        null=False
+    )
+    zone = models.ForeignKey(
+        to='Zone',
+        on_delete=models.DO_NOTHING,
+        db_column='id_zone',
+        null=False
+    )
+
+
+class Customer(ModelBase):
+    class Gender(models.TextChoices):
+        MALE = 'M', 'Masculino'
+        FEMALE = 'F', 'Feminino'
+
+    name = models.CharField(max_length=64, null=False)
+    income = models.DecimalField(max_digits=16, decimal_places=2, null=False)
+    gender = models.CharField(max_length=1, null=False, choices=Gender.choices)
+    district = models.ForeignKey(
+        to='District',
+        on_delete=models.DO_NOTHING,
+        db_column='id_city',
+        null=False
+    )
+    marital_status = models.ForeignKey(
+        to='MaritalStatus',
+        on_delete=models.DO_NOTHING,
+        db_column='id_marital_status',
+        null=False
+    )
+
+    class Meta:
+        db_table = 'customer'
+
+
+class Employee(ModelBase):
+    class Gender(models.TextChoices):
+        MALE = 'M', 'Masculino'
+        FEMALE = 'F', 'Feminino'
+
+    name = models.CharField(max_length=64, null=False)
+    salary = models.DecimalField(max_digits=16, decimal_places=2, null=False)
+    admission_date = models.DateField(null=False)
+    birth_date = models.DateField(null=False)
+    gender = models.CharField(max_length=1, null=False, choices=Gender.choices)
     department = models.ForeignKey(
         to='Department',
         on_delete=models.DO_NOTHING,
         db_column='id_department',
-        null=False,
+        null=False
+    )
+    marital_status = models.ForeignKey(
+        to='MaritalStatus',
+        on_delete=models.DO_NOTHING,
+        db_column='id_marital_status',
+        null=False
+    )
+    district = models.ForeignKey(
+        to='District',
+        on_delete=models.DO_NOTHING,
+        db_column='id_city',
+        null=False
     )
 
     class Meta:
         db_table = 'employee'
 
 
-class Customer(ModelBase):
-    class Gender(models.TextChoices):
-        MALE = 'M'
-        FEMALE = 'F'
-
-    name = models.CharField(max_length=64, null=False)
-    income = models.DecimalField(max_digits=16, decimal_places=2, null=False)
-    gender = models.CharField(max_length=1, null=False, choices=Gender.choices)
-
-    class Meta:
-        db_table = 'customer'
-
-
-class District(ModelBase):
-    name = models.CharField(max_length=64, null=False)
-    zone = models.ForeignKey(
-        to='Zone',
-        on_delete=models.DO_NOTHING,
-        db_column='id_zone',
-        null=False,
-    )
-    city = models.ForeignKey(
-        to='City',
-        on_delete=models.DO_NOTHING,
-        db_column='id_city',
-        null=False,
-    )
-
-    class Meta:
-        db_table = 'district'
-
-
-class Branch(ModelBase):
-    name = models.CharField(max_length=64, null=False)
-    district = models.ForeignKey(
-        to='District',
-        on_delete=models.DO_NOTHING,
-        db_column='id_district',
-        null=False,
-    )
-
-    class Meta:
-        db_table = 'branch'
-
-
-class Product(ModelBase):
-    name = models.CharField(max_length=64, null=False)
-    cost_price = models.DecimalField(max_digits=16, decimal_places=2, null=False)
-    sale_price = models.DecimalField(max_digits=16, decimal_places=2, null=False)
-    product_group = models.ForeignKey(
-        to='ProductGroup',
-        on_delete=models.DO_NOTHING,
-        db_column='id_product_group',
-        null=False,
-    )
-    supplier = models.ForeignKey(
-        to='Supplier',
-        on_delete=models.DO_NOTHING,
-        db_column='id_supplier',
-        null=False,
-    )
-
-    class Meta:
-        db_table = 'product'
-
-
 class ProductGroup(ModelBase):
     name = models.CharField(max_length=64, null=False)
-    comission_percent = models.DecimalField(max_digits=5, decimal_places=2, null=False)
-    gain_percent = models.DecimalField(max_digits=5, decimal_places=2, null=False)
+    commission_percentage = models.DecimalField(max_digits=5, decimal_places=2, null=False)
+    gain_percentage = models.DecimalField(max_digits=5, decimal_places=2, null=False)
 
     class Meta:
         db_table = 'product_group'
@@ -157,46 +149,80 @@ class Supplier(ModelBase):
         db_table = 'supplier'
 
 
+class Product(ModelBase):
+    name = models.CharField(max_length=64, null=False)
+    cost_price = models.DecimalField(max_digits=16, decimal_places=2, null=False)
+    sale_price = models.DecimalField(max_digits=16, decimal_places=2, null=False)
+    supplier = models.ForeignKey(
+        to='Supplier',
+        on_delete=models.DO_NOTHING,
+        db_column='id_supplier',
+        null=False
+    )
+    product_group = models.ForeignKey(
+        to='ProductGroup',
+        on_delete=models.DO_NOTHING,
+        db_column='id_product_group',
+        null=False
+    )
+
+    class Meta:
+        db_table = 'product'
+
+
+class Branch(ModelBase):
+    name = models.CharField(max_length=64, null=False)
+    district = models.ForeignKey(
+        to='District',
+        on_delete=models.DO_NOTHING,
+        db_column='id_city',
+        null=False
+    )
+
+    class Meta:
+        db_table = 'branch'
+
+
 class Sale(ModelBase):
-    date = models.DateField(null=False)
+    date = models.DateTimeField(auto_now_add=True, null=False)
     customer = models.ForeignKey(
         to='Customer',
         on_delete=models.DO_NOTHING,
         db_column='id_customer',
-        null=False,
-    )
-    branch = models.ForeignKey(
-        to='Branch',
-        on_delete=models.DO_NOTHING,
-        db_column='id_branch',
-        null=False,
+        null=False
     )
     employee = models.ForeignKey(
         to='Employee',
         on_delete=models.DO_NOTHING,
         db_column='id_employee',
-        null=False,
+        null=False
+    )
+    branch = models.ForeignKey(
+        to='Branch',
+        on_delete=models.DO_NOTHING,
+        db_column='id_branch',
+        null=False
     )
 
     class Meta:
         db_table = 'sale'
 
 
-class SaleProduct(ModelBase):
-    quantity = models.DecimalField(max_digits=16, decimal_places=2, null=False)
-    sale_price = models.DecimalField(max_digits=16, decimal_places=2, null=False)
+class SaleItem(ModelBase):
     sale = models.ForeignKey(
         to='Sale',
         on_delete=models.DO_NOTHING,
         db_column='id_sale',
-        null=False,
+        null=False
     )
     product = models.ForeignKey(
         to='Product',
         on_delete=models.DO_NOTHING,
         db_column='id_product',
-        null=False,
+        null=False
     )
+    quantity = models.DecimalField(max_digits=16, decimal_places=3, null=False)
+    sale_price = models.DecimalField(max_digits=16, decimal_places=2, null=False)
 
     class Meta:
-        db_table = 'sale_product'
+        db_table = 'sale_item'

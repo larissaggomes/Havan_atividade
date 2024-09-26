@@ -82,5 +82,5 @@ class SaleSerializer(serializers.ModelSerializer):
 
 class SaleProductSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.SaleProduct
+        model = models.SaleItem
         fields = '__all__'
