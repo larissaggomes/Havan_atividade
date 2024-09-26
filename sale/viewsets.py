@@ -67,6 +67,6 @@ class SaleViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.SaleSerializer
 
 
-class SaleProductViewSet(viewsets.ModelViewSet):
+class SaleItemViewSet(viewsets.ModelViewSet):
     queryset = models.SaleItem.objects.all()
-    serializer_class = serializers.SaleProductSerializer
+    serializer_class = serializers.SaleItemSerializer

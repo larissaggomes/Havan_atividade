@@ -80,7 +80,7 @@ class SaleSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class SaleProductSerializer(serializers.ModelSerializer):
+class SaleItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.SaleItem
         fields = '__all__'

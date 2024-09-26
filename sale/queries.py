@@ -7,3 +7,7 @@ def listar_department():
 
 def listar_status():
     return models.MaritalStatus.objects.all()
+
+
+def clientes():
+    return models.Customer.objects.all()
