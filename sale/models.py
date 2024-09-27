@@ -124,7 +124,7 @@ class Employee(ModelBase):
     district = models.ForeignKey(
         to='District',
         on_delete=models.DO_NOTHING,
-        db_column='id_city',
+        db_column='id_district',
         null=False
     )
 
