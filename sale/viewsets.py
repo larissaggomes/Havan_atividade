@@ -1,4 +1,7 @@
 from rest_framework import viewsets
+from rest_framework.decorators import action
+from rest_framework.response import Response
+
 from sale import models, serializers
 
 
@@ -30,6 +33,23 @@ class ZoneViewSet(viewsets.ModelViewSet):
 class EmployeeViewSet(viewsets.ModelViewSet):
     queryset = models.Employee.objects.all()
     serializer_class = serializers.EmployeeSerializer
+
+    @action(detail=False, methods=['GET'])
+    def get_by_name(self, request, *args, **kwargs):
+       name = request.query_params.get('name', None)
+       self.queryset = models.Employee.objects.filter(name__icontains=name)
+       return super().list(request, *args, **kwargs)
+
+    @action(detail=True, methods=['GET'])
+    def get_salary_total(self, request, *args, **kwargs):
+        hours_extras = request.query_params.get('hours_extras', None)
+        hours_values = request.query_params.get('hours_values', None)
+        employee = self.get_object()
+        total = employee.total_with_hour_extras(
+            hours_extras=int(hours_extras),
+            hours_values=float(hours_values)
+        )
+        return Response({'salary': employee.salary, 'total': employee.total})
 
 
 class CustomerViewSet(viewsets.ModelViewSet):

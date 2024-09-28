@@ -20,5 +20,5 @@ def query04():
             default=Value('MALE'),
             output_field=CharField()
         )
-    ).values('name', 'gender_description')
+    ).only('id', 'name')
     return queryset
